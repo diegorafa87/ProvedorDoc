@@ -1,0 +1,5 @@
+- [ ] Verificar se o arquivo copilot-instructions.md existe na pasta .github.
+- [ ] Estruturar projeto backend e frontend.
+- [ ] Adicionar arquivos iniciais (index.js, App.js, package.json).
+- [ ] Criar README.md com instruções.
+- [ ] Pronto para instalar dependências e iniciar o desenvolvimento.
