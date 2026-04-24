@@ -80,7 +80,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
           fileUrl: url
         }
       }));
-      fetch('http://localhost:5000/api/acao', {
+        fetch('https://provedordoc.onrender.com/api/acao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +99,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
       link.href = fileUrl;
       link.download = file.name;
       link.click();
-      fetch('http://localhost:5000/api/acao', {
+        fetch('https://provedordoc.onrender.com/api/acao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

@@ -12,7 +12,7 @@ const PaginaCadastroSTFC = () => {
     const params = new URLSearchParams(location.search);
     const cnpj = params.get('cnpj');
     if (cnpj) {
-      fetch(`http://localhost:5000/api/clientes?cnpj=${cnpj}`)
+      fetch(`https://provedordoc.onrender.com/api/clientes?cnpj=${cnpj}`)
         .then(async resp => {
           if (!resp.ok) return;
           const data = await resp.json();
