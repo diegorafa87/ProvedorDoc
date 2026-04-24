@@ -1,3 +1,7 @@
+// Rota raiz amigável
+app.get('/', (req, res) => {
+  res.send('API do ProvedorDoc está online!');
+});
 // Entry point do backend
 require('dotenv').config();
 const express = require('express');
