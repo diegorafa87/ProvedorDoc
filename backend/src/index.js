@@ -1,7 +1,4 @@
-// Rota raiz amigável
-app.get('/', (req, res) => {
-  res.send('API do ProvedorDoc está online!');
-});
+
 // Entry point do backend
 require('dotenv').config();
 const express = require('express');
@@ -29,7 +26,13 @@ const contratoRoutes = require('./routes/contratoRoutes');
 app.use('/api', clienteRoutes);
 app.use('/api', logRoutes);
 app.use('/api', acaoRoutes);
+
 app.use('/api', contratoRoutes);
+
+// Rota raiz amigável
+app.get('/', (req, res) => {
+  res.send('API do ProvedorDoc está online!');
+});
 
 // Porta padrão
 const PORT = process.env.PORT || 5000;
