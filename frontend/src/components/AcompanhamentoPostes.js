@@ -1,3 +1,4 @@
+import API_URL from '../services/api';
 import React, { useState, useEffect } from 'react';
 import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
 import { IconDownload } from './IconsHistorico';
@@ -80,7 +81,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
           fileUrl: url
         }
       }));
-        fetch('https://provedordoc.onrender.com/api/acao', {
+        fetch(`${API_URL}/api/acao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -99,7 +100,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
       link.href = fileUrl;
       link.download = file.name;
       link.click();
-        fetch('https://provedordoc.onrender.com/api/acao', {
+        fetch(`${API_URL}/api/acao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

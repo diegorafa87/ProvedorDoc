@@ -1,3 +1,4 @@
+import API_URL from '../services/api';
 import { IconDownload, IconTrash } from './IconsHistorico';
 import React, { useState, useEffect } from 'react';
 
@@ -107,7 +108,7 @@ const CadastroTVpA = ({ cnpj }) => {
     localStorage.setItem(historicoKey, JSON.stringify(novoHistorico));
     // Não limpa as linhas após gerar o CSV
     // Log da ação no backend
-      fetch('https://provedordoc.onrender.com/api/acao', {
+      fetch(`${API_URL}/api/acao`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -1,3 +1,4 @@
+import API_URL from './services/api';
 
 import React, { useState } from 'react';
 
@@ -13,7 +14,7 @@ function App() {
 
   // Buscar consultorias distintas dos clientes cadastrados
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/clientes')
+    fetch(`${API_URL}/api/clientes`)
       .then(r => r.json())
       .then(clientes => {
         const unicos = [...new Set(clientes.map(c => c.consultoria).filter(Boolean))];

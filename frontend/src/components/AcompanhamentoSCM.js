@@ -1,3 +1,4 @@
+import API_URL from '../services/api';
 import React, { useState, useEffect } from 'react';
 import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
 
@@ -83,7 +84,7 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
         }
       }));
       // Log da ação de upload
-      fetch('https://provedordoc.onrender.com/api/acao', {
+      fetch(`${API_URL}/api/acao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -103,7 +104,7 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
       link.download = file.name;
       link.click();
       // Log da ação de download
-      fetch('https://provedordoc.onrender.com/api/acao', {
+      fetch(`${API_URL}/api/acao`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

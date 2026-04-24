@@ -1,3 +1,4 @@
+import API_URL from '../services/api';
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import MenuLateral from '../components/MenuLateral';
@@ -29,7 +30,7 @@ const DetalheCliente = () => {
     setLoading(true);
     setErro(null);
     console.log('Buscando cliente para id:', id);
-    fetch(`http://localhost:5000/api/clientes/${id}`)
+    fetch(`${API_URL}/api/clientes/${id}`)
       .then(async resp => {
         console.log('Status da resposta:', resp.status);
         let data = null;
@@ -76,7 +77,7 @@ const DetalheCliente = () => {
 
   const handleSalvar = async e => {
     e.preventDefault();
-    const resp = await fetch(`http://localhost:5000/api/clientes/${id}`, {
+    const resp = await fetch(`${API_URL}/api/clientes/${id}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(form)
