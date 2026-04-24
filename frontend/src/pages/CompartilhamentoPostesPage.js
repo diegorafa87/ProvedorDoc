@@ -14,7 +14,7 @@ export default function CompartilhamentoPostesPage() {
     if (!file) return;
     const formData = new FormData();
     formData.append('contrato', file);
-    const resp = await fetch('http://localhost:5000/api/contrato/postes/upload', {
+    const resp = await fetch('https://provedordoc.onrender.com/api/contrato/postes/upload', {
       method: 'POST',
       body: formData
     });

@@ -126,7 +126,7 @@ export default function TabelaRelatorioEconomico({ cnpjPadrao, dataPadrao, datas
     setHistoricoCSV(novoHistorico);
     localStorage.setItem(historicoKey, JSON.stringify(novoHistorico));
     // Log da ação no backend
-    fetch('http://localhost:5000/api/acao', {
+      fetch('https://provedordoc.onrender.com/api/acao', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

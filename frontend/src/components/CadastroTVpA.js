@@ -107,7 +107,7 @@ const CadastroTVpA = ({ cnpj }) => {
     localStorage.setItem(historicoKey, JSON.stringify(novoHistorico));
     // Não limpa as linhas após gerar o CSV
     // Log da ação no backend
-    fetch('http://localhost:5000/api/acao', {
+      fetch('https://provedordoc.onrender.com/api/acao', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

@@ -85,7 +85,7 @@ export default function AcompanhamentoInfra({ razaoSocial, cnpj }) {
         }
       }));
       // Log da ação de upload
-      fetch('http://localhost:5000/api/acao', {
+        fetch('https://provedordoc.onrender.com/api/acao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -105,7 +105,7 @@ export default function AcompanhamentoInfra({ razaoSocial, cnpj }) {
       link.download = file.name;
       link.click();
       // Log da ação de download
-      fetch('http://localhost:5000/api/acao', {
+        fetch('https://provedordoc.onrender.com/api/acao', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
