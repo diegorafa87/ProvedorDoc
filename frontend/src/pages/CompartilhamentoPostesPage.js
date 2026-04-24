@@ -1,3 +1,4 @@
+import API_URL from '../services/api';
 import React, { useEffect, useRef, useState } from 'react';
 import { IconDownload } from '../components/IconsHistorico';
 import { salvarHistoricoPostesNoStorage, carregarHistoricoPostesDoStorage } from '../utils/localStorageHistoricoPostes';
@@ -14,7 +15,7 @@ export default function CompartilhamentoPostesPage() {
     if (!file) return;
     const formData = new FormData();
     formData.append('contrato', file);
-    const resp = await fetch('https://provedordoc.onrender.com/api/contrato/postes/upload', {
+    const resp = await fetch(`${API_URL}/api/contrato/postes/upload`, {
       method: 'POST',
       body: formData
     });
