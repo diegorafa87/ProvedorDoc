@@ -73,9 +73,7 @@ const PaginaCadastroSCM = () => {
         {aba === 'acompanhamento' ? (
           <AcompanhamentoSCM razaoSocial={razaoSocial} cnpj={cnpj} />
         ) : (
-            fetch('https://provedordoc.onrender.com/api/acao', {
-            <CadastroSCM cnpj={cnpj} razaoSocial={razaoSocial} />
-          </div>
+          <CadastroSCM cnpj={cnpj} razaoSocial={razaoSocial} />
         )}
       </div>
     </div>
