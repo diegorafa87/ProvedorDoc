@@ -1,7 +1,17 @@
 // Entry point do backend
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 const app = express();
+
+// Conexão com MongoDB Atlas
+mongoose.connect(process.env.MONGODB_URI)
+  .then(() => console.log('Conectado ao MongoDB Atlas!'))
+  .catch((err) => {
+    console.error('Erro ao conectar ao MongoDB:', err);
+    process.exit(1);
+  });
 
 app.use(cors());
 app.use(express.json());
