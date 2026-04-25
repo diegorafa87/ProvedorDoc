@@ -125,8 +125,11 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              }
-                    {MESES.map(mes => (
+              acao: 'DOWNLOAD_PDF_SCM',
+              usuario: razaoSocial || 'desconhecido',
+              detalhes: { nomeArquivo: file.name, ano, mes }
+            })
+          });
                       <div key={mes} style={{ minWidth: 220, background: '#fff', borderRadius: 8, boxShadow: '0 1px 4px #0001', padding: 12, marginBottom: 8, display: 'flex', flexDirection: 'column', alignItems: 'flex-start', border: dados[ano][mes].checked ? '2px solid #388e3c' : '1px solid #ccc', opacity: desligado ? 0.5 : 1 }}>
                         <label style={{ fontWeight: 600, marginBottom: 4 }}>
                           <input type="checkbox" checked={dados[ano][mes].checked} onChange={() => handleCheck(ano, mes)} style={{ marginRight: 8 }} disabled={desligado} />
