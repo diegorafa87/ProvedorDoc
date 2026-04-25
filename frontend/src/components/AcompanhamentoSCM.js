@@ -257,47 +257,7 @@
       });
     // eslint-disable-next-line
   }, [cnpj]);
-import API_URL from '../services/api';
-import React, { useState, useEffect } from 'react';
-import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
-
-const ANOS = [2026, 2025, 2024];
-const MESES = [
-  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
-  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
-];
-
-const initialData = () => {
-  const data = {};
-  ANOS.forEach(ano => {
-    data[ano] = {};
-    MESES.forEach(mes => {
-      data[ano][mes] = {
-        checked: false,
-        file: null,
-        fileUrl: '',
-      };
-    });
-  });
-  return data;
-};
-
-
-export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
-  const [dados, setDados] = useState(initialData());
-  const chaveDesligados = cnpj ? `anosDesligados_SCM_${cnpj}` : 'anosDesligados_SCM';
-  const chaveOcultos = cnpj ? `anosOcultos_SCM_${cnpj}` : 'anosOcultos_SCM';
-  const [anosDesligados, setAnosDesligados] = useState(() => {
-    const salvo = localStorage.getItem(chaveDesligados);
-    return salvo ? JSON.parse(salvo) : {};
-  });
-  const [anosOcultos, setAnosOcultos] = useState(() => {
-    const salvo = localStorage.getItem(chaveOcultos);
-    return salvo ? JSON.parse(salvo) : {};
-  });
-
-
-  const handleCheck = (ano, mes) => {
+// ...existing code...
     setDados(prev => ({
       ...prev,
       [ano]: {
