@@ -130,15 +130,6 @@
               detalhes: { nomeArquivo: file.name, ano, mes }
             })
           });
-      .catch(() => {
-        // fallback localStorage
-        const salvoDesligados = localStorage.getItem(chaveDesligados);
-        if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
-        const salvoOcultos = localStorage.getItem(chaveOcultos);
-        if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
-      });
-    // eslint-disable-next-line
-  }, [cnpj]);
 // ...existing code...
     setDados(prev => ({
       ...prev,
