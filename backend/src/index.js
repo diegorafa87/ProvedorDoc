@@ -1,3 +1,4 @@
+const acompanhamentoPostesRoutes = require('./routes/acompanhamentoPostesRoutes');
 
 // Entry point do backend
 require('dotenv').config();
@@ -21,13 +22,17 @@ app.use(express.json());
 const clienteRoutes = require('./routes/clienteRoutes');
 const logRoutes = require('./routes/logRoutes');
 const acaoRoutes = require('./routes/acaoRoutes');
+
 const contratoRoutes = require('./routes/contratoRoutes');
+const acompanhamentoSCMRoutes = require('./routes/acompanhamentoSCMRoutes');
+
 
 app.use('/api', clienteRoutes);
 app.use('/api', logRoutes);
 app.use('/api', acaoRoutes);
-
 app.use('/api', contratoRoutes);
+app.use('/api/acompanhamento-scm', acompanhamentoSCMRoutes);
+app.use('/api/acompanhamento-postes', acompanhamentoPostesRoutes);
 
 // Rota raiz amigável
 app.get('/', (req, res) => {

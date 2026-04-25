@@ -1,3 +1,35 @@
+    // Salva no backend sempre que muda
+    useEffect(() => {
+      if (!cnpj) return;
+      fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ anosDesligados, anosOcultos })
+      }).catch(() => {
+        // fallback localStorage
+        localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
+        localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
+      });
+      // eslint-disable-next-line
+    }, [anosDesligados, anosOcultos, cnpj]);
+  // Carrega do backend ao montar
+  useEffect(() => {
+    if (!cnpj) return;
+    fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.anosDesligados) setAnosDesligados(data.anosDesligados);
+        if (data.anosOcultos) setAnosOcultos(data.anosOcultos);
+      })
+      .catch(() => {
+        // fallback localStorage
+        const salvoDesligados = localStorage.getItem(chaveDesligados);
+        if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
+        const salvoOcultos = localStorage.getItem(chaveOcultos);
+        if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
+      });
+    // eslint-disable-next-line
+  }, [cnpj]);
 import API_URL from '../services/api';
 import React, { useState, useEffect } from 'react';
 import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
@@ -42,19 +74,6 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
     return salvo ? JSON.parse(salvo) : {};
   });
 
-  useEffect(() => {
-    localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
-  }, [anosDesligados, chaveDesligados]);
-  useEffect(() => {
-    localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
-  }, [anosOcultos, chaveOcultos]);
-
-  useEffect(() => {
-    const salvoDesligados = localStorage.getItem(chaveDesligados);
-    if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
-    const salvoOcultos = localStorage.getItem(chaveOcultos);
-    if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
-  }, [chaveDesligados, chaveOcultos]);
 
   const handleCheck = (ano) => {
     setDados(prev => ({
@@ -127,11 +146,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
             <div key={ano} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ color: '#888', fontWeight: 600, fontSize: 18 }}>{ano} (oculto)</span>
               <button
-                onClick={() => setAnosOcultos(prev => {
-                  const novo = { ...prev, [ano]: false };
-                  localStorage.setItem('anosOcultos_POSTES', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: false }))}
                 style={{ background: '#fff', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title="Exibir ano"
               >
@@ -157,22 +172,14 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
                 <span style={{ marginLeft: 8, color: '#d32f2f', fontWeight: 700, fontSize: 22 }}>⏻</span>
               )}
               <button
-                onClick={() => setAnosDesligados(prev => {
-                  const novo = { ...prev, [ano]: !prev[ano] };
-                  localStorage.setItem('anosDesligados_POSTES', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosDesligados(prev => ({ ...prev, [ano]: !prev[ano] }))}
                 style={{ marginLeft: 16, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title={desligado ? 'Reativar ano' : 'Desligar ano'}
               >
                 {desligado ? <IconPowerOn /> : <IconPower />}
               </button>
               <button
-                onClick={() => setAnosOcultos(prev => {
-                  const novo = { ...prev, [ano]: true };
-                  localStorage.setItem('anosOcultos_POSTES', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: true }))}
                 style={{ marginLeft: 8, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title="Ocultar ano"
               >
