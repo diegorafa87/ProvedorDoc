@@ -1,37 +1,6 @@
-    // Salva no backend sempre que muda
-    useEffect(() => {
-      if (!cnpj) return;
-      fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ anosDesligados, anosOcultos })
-      }).catch(() => {
-        // fallback localStorage
-        localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
-        localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
-      });
-      // eslint-disable-next-line
-    }, [anosDesligados, anosOcultos, cnpj]);
-  // Carrega do backend ao montar
-  useEffect(() => {
-    if (!cnpj) return;
-    fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`)
-      .then(res => res.json())
-      .then(data => {
-        if (data.anosDesligados) setAnosDesligados(data.anosDesligados);
-        if (data.anosOcultos) setAnosOcultos(data.anosOcultos);
-      })
-      .catch(() => {
-        // fallback localStorage
-        const salvoDesligados = localStorage.getItem(chaveDesligados);
-        if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
-        const salvoOcultos = localStorage.getItem(chaveOcultos);
-        if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
-      });
-    // eslint-disable-next-line
-  }, [cnpj]);
+
 import API_URL from '../services/api';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
 import { IconDownload } from './IconsHistorico';
 
@@ -50,12 +19,57 @@ const initialData = () => {
 };
 
 
-import { useRef } from 'react';
+
 
 export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
   const [dados, setDados] = useState(initialData());
   const inputContratoRef = useRef();
   const [camposContrato, setCamposContrato] = useState(null);
+
+  const chaveDesligados = cnpj ? `anosDesligados_POSTES_${cnpj}` : 'anosDesligados_POSTES';
+  const chaveOcultos = cnpj ? `anosOcultos_POSTES_${cnpj}` : 'anosOcultos_POSTES';
+  const [anosDesligados, setAnosDesligados] = useState(() => {
+    const salvo = localStorage.getItem(chaveDesligados);
+    return salvo ? JSON.parse(salvo) : {};
+  });
+  const [anosOcultos, setAnosOcultos] = useState(() => {
+    const salvo = localStorage.getItem(chaveOcultos);
+    return salvo ? JSON.parse(salvo) : {};
+  });
+
+  // Salva no backend sempre que muda
+  useEffect(() => {
+    if (!cnpj) return;
+    fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ anosDesligados, anosOcultos })
+    }).catch(() => {
+      // fallback localStorage
+      localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
+      localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
+    });
+    // eslint-disable-next-line
+  }, [anosDesligados, anosOcultos, cnpj]);
+
+  // Carrega do backend ao montar
+  useEffect(() => {
+    if (!cnpj) return;
+    fetch(`${API_URL}/api/acompanhamento-postes/${cnpj}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.anosDesligados) setAnosDesligados(data.anosDesligados);
+        if (data.anosOcultos) setAnosOcultos(data.anosOcultos);
+      })
+      .catch(() => {
+        // fallback localStorage
+        const salvoDesligados = localStorage.getItem(chaveDesligados);
+        if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
+        const salvoOcultos = localStorage.getItem(chaveOcultos);
+        if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
+      });
+    // eslint-disable-next-line
+  }, [cnpj]);
 
   // Função placeholder para upload do contrato
   const handleContratoUpload = (e) => {
