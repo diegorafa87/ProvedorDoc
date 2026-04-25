@@ -26,16 +26,7 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
   const inputContratoRef = useRef();
   const [camposContrato, setCamposContrato] = useState(null);
 
-  const chaveDesligados = cnpj ? `anosDesligados_POSTES_${cnpj}` : 'anosDesligados_POSTES';
-  const chaveOcultos = cnpj ? `anosOcultos_POSTES_${cnpj}` : 'anosOcultos_POSTES';
-  const [anosDesligados, setAnosDesligados] = useState(() => {
-    const salvo = localStorage.getItem(chaveDesligados);
-    return salvo ? JSON.parse(salvo) : {};
-  });
-  const [anosOcultos, setAnosOcultos] = useState(() => {
-    const salvo = localStorage.getItem(chaveOcultos);
-    return salvo ? JSON.parse(salvo) : {};
-  });
+
 
   // Salva no backend sempre que muda
   useEffect(() => {
