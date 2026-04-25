@@ -1,3 +1,35 @@
+    // Salva no backend sempre que muda
+    useEffect(() => {
+      if (!cnpj) return;
+      fetch(`${API_URL}/api/acompanhamento-scm/${cnpj}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ anosDesligados, anosOcultos })
+      }).catch(() => {
+        // fallback localStorage
+        localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
+        localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
+      });
+      // eslint-disable-next-line
+    }, [anosDesligados, anosOcultos, cnpj]);
+  // Carrega do backend ao montar
+  useEffect(() => {
+    if (!cnpj) return;
+    fetch(`${API_URL}/api/acompanhamento-scm/${cnpj}`)
+      .then(res => res.json())
+      .then(data => {
+        if (data.anosDesligados) setAnosDesligados(data.anosDesligados);
+        if (data.anosOcultos) setAnosOcultos(data.anosOcultos);
+      })
+      .catch(() => {
+        // fallback localStorage
+        const salvoDesligados = localStorage.getItem(chaveDesligados);
+        if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
+        const salvoOcultos = localStorage.getItem(chaveOcultos);
+        if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
+      });
+    // eslint-disable-next-line
+  }, [cnpj]);
 import API_URL from '../services/api';
 import React, { useState, useEffect } from 'react';
 import { IconEye, IconEyeOff, IconPower, IconPowerOn } from './IconsAcompanhamento';
@@ -37,19 +69,6 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
     return salvo ? JSON.parse(salvo) : {};
   });
 
-  useEffect(() => {
-    localStorage.setItem(chaveDesligados, JSON.stringify(anosDesligados));
-  }, [anosDesligados, chaveDesligados]);
-  useEffect(() => {
-    localStorage.setItem(chaveOcultos, JSON.stringify(anosOcultos));
-  }, [anosOcultos, chaveOcultos]);
-
-  useEffect(() => {
-    const salvoDesligados = localStorage.getItem(chaveDesligados);
-    if (salvoDesligados) setAnosDesligados(JSON.parse(salvoDesligados));
-    const salvoOcultos = localStorage.getItem(chaveOcultos);
-    if (salvoOcultos) setAnosOcultos(JSON.parse(salvoOcultos));
-  }, [chaveDesligados, chaveOcultos]);
 
   const handleCheck = (ano, mes) => {
     setDados(prev => ({
@@ -111,11 +130,7 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
           acao: 'DOWNLOAD_PDF_SCM',
           usuario: razaoSocial || 'desconhecido',
           detalhes: { nomeArquivo: file.name, ano, mes }
-        })
-      });
-    }
-  };
-
+                  onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: false }))}
   if (!razaoSocial) {
     return <div style={{ padding: 24, color: 'red', fontWeight: 'bold', textAlign: 'center' }}>Cliente não selecionado ou parâmetro razaoSocial ausente na URL.</div>;
   }
@@ -144,22 +159,14 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
             </div>
           );
         }
-        return (
-          <div key={ano} style={{
-            marginBottom: 32,
-            border: desligado ? '2.5px solid #d32f2f' : (todosMesesMarcados ? '2.5px solid #388e3c' : '1px solid #1976d2'),
-            borderRadius: 12,
+                  onClick={() => setAnosDesligados(prev => ({ ...prev, [ano]: !prev[ano] }))}
             background: desligado ? '#ffebee' : (todosMesesMarcados ? '#e8f5e9' : '#f4f8ff'),
             boxShadow: '0 2px 8px #0001',
             padding: 16,
             opacity: desligado ? 0.6 : 1
           }}>
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
-              <input type="checkbox" checked={todosMesesMarcados} readOnly style={{ marginRight: 8, accentColor: '#388e3c', width: 20, height: 20 }} disabled={desligado} />
-              <h3 style={{ color: desligado ? '#d32f2f' : (todosMesesMarcados ? '#388e3c' : '#1976d2'), margin: 0 }}>{ano}</h3>
-              {todosMesesMarcados && !desligado && (
-                <span style={{ marginLeft: 8, color: '#388e3c', fontWeight: 700, fontSize: 22 }}>✔</span>
-              )}
+                  onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: true }))}
               {desligado && (
                 <span style={{ marginLeft: 8, color: '#d32f2f', fontWeight: 700, fontSize: 22 }}>⏻</span>
               )}

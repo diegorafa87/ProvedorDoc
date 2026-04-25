@@ -150,11 +150,7 @@ export default function AcompanhamentoTVpA({ razaoSocial, cnpj }) {
             <div key={ano} style={{ marginBottom: 8, display: 'flex', alignItems: 'center', gap: 8 }}>
               <span style={{ color: '#888', fontWeight: 600, fontSize: 18 }}>{ano} (oculto)</span>
               <button
-                onClick={() => setAnosOcultos(prev => {
-                  const novo = { ...prev, [ano]: false };
-                  localStorage.setItem('anosOcultos_TVPA', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: false }))}
                 style={{ background: '#fff', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title="Exibir ano"
               >
@@ -183,22 +179,14 @@ export default function AcompanhamentoTVpA({ razaoSocial, cnpj }) {
                 <span style={{ marginLeft: 8, color: '#d32f2f', fontWeight: 700, fontSize: 22 }}>⏻</span>
               )}
               <button
-                onClick={() => setAnosDesligados(prev => {
-                  const novo = { ...prev, [ano]: !prev[ano] };
-                  localStorage.setItem('anosDesligados_TVPA', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosDesligados(prev => ({ ...prev, [ano]: !prev[ano] }))}
                 style={{ marginLeft: 16, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title={desligado ? 'Reativar ano' : 'Desligar ano'}
               >
                 {desligado ? <IconPowerOn /> : <IconPower />}
               </button>
               <button
-                onClick={() => setAnosOcultos(prev => {
-                  const novo = { ...prev, [ano]: true };
-                  localStorage.setItem('anosOcultos_TVPA', JSON.stringify(novo));
-                  return novo;
-                })}
+                onClick={() => setAnosOcultos(prev => ({ ...prev, [ano]: true }))}
                 style={{ marginLeft: 8, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }}
                 title="Ocultar ano"
               >
