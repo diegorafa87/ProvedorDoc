@@ -117,7 +117,6 @@ const ListaClientes = ({ atualizar, consultoriaFiltro, pesquisa }) => {
   const alternarStatus = (status) => {
     setStatusVisiveis(v => {
       const novo = { ...v, [status]: !v[status] };
-      localStorage.setItem('statusVisiveis', JSON.stringify(novo));
       return novo;
     });
   };
