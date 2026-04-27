@@ -347,7 +347,9 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
                   <td style={{padding:'4px 8px'}}>{item.data}</td>
                   <td style={{textAlign:'center',padding:'4px 8px', display:'flex', gap:8, justifyContent:'center'}}>
                     <button onClick={() => {
-                      const blob = new Blob([item.conteudo], { type: 'text/csv;charset=utf-8;' });
+                      // Adiciona BOM UTF-8 ao início do conteúdo
+                      const BOM = '\uFEFF';
+                      const blob = new Blob([BOM + item.conteudo], { type: 'text/csv;charset=utf-8;' });
                       const link = document.createElement('a');
                       link.href = URL.createObjectURL(blob);
                       link.setAttribute('download', item.nome);
