@@ -39,6 +39,17 @@ app.get('/', (req, res) => {
   res.send('API do ProvedorDoc está online!');
 });
 
+
+// Servir o build do React em produção
+const path = require('path');
+const buildPath = path.resolve(__dirname, '../../frontend/build');
+app.use(express.static(buildPath));
+
+// Rota coringa para SPA (React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(buildPath, 'index.html'));
+});
+
 // Porta padrão
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
