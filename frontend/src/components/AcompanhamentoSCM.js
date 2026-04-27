@@ -176,57 +176,79 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
 
         return (
           <div key={ano} style={{
+            marginBottom: 32,
+            border: desligado ? '2.5px solid #d32f2f' : (todosMesesMarcados ? '2.5px solid #388e3c' : '1px solid #1976d2'),
+            borderRadius: 12,
             background: desligado ? '#ffebee' : (todosMesesMarcados ? '#e8f5e9' : '#f4f8ff'),
+            boxShadow: '0 2px 8px #0001',
             padding: 16,
-            marginBottom: 16,
             opacity: desligado ? 0.6 : 1
           }}>
-            <div>
-              <strong>{ano}</strong>
-
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: 12 }}>
+              <strong style={{ fontSize: 22, color: desligado ? '#d32f2f' : (todosMesesMarcados ? '#388e3c' : '#1976d2') }}>{ano}</strong>
               <button onClick={() => {
                 const novo = { ...anosDesligados, [ano]: !desligado };
                 setAnosDesligados(novo);
                 localStorage.setItem(chaveDesligados, JSON.stringify(novo));
-              }}>
+              }} style={{ marginLeft: 16, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }} title={desligado ? 'Reativar ano' : 'Desligar ano'}>
                 {desligado ? <IconPowerOn /> : <IconPower />}
               </button>
-
               <button onClick={() => {
                 const novo = { ...anosOcultos, [ano]: true };
                 setAnosOcultos(novo);
                 localStorage.setItem(chaveOcultos, JSON.stringify(novo));
-              }}>
+              }} style={{ marginLeft: 8, background: 'none', border: 'none', padding: 6, borderRadius: 6, cursor: 'pointer' }} title="Ocultar ano">
                 <IconEye />
               </button>
             </div>
-
-            {MESES.map(mes => (
-              <div key={mes} style={{ marginTop: 8 }}>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={dados[ano][mes].checked}
-                    onChange={() => handleCheck(ano, mes)}
-                    disabled={desligado}
-                  />
-                  {mes}
-                </label>
-
-                <input
-                  type="file"
-                  accept="application/pdf"
-                  onChange={e => handleFileChange(ano, mes, e)}
-                  disabled={desligado}
-                />
-
-                {dados[ano][mes].file && (
-                  <button onClick={() => handleDownload(ano, mes)}>
-                    Download
-                  </button>
-                )}
-              </div>
-            ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+              {MESES.map(mes => (
+                <div key={mes} style={{
+                  minWidth: 220,
+                  background: '#fff',
+                  borderRadius: 8,
+                  boxShadow: '0 1px 4px #0001',
+                  padding: 12,
+                  marginBottom: 8,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'flex-start',
+                  border: dados[ano][mes].checked ? '2px solid #388e3c' : '1px solid #ccc',
+                  opacity: desligado ? 0.5 : 1
+                }}>
+                  <label style={{ fontWeight: 600, marginBottom: 4 }}>
+                    <input
+                      type="checkbox"
+                      checked={dados[ano][mes].checked}
+                      onChange={() => handleCheck(ano, mes)}
+                      style={{ marginRight: 8 }}
+                      disabled={desligado}
+                    />
+                    {mes}
+                  </label>
+                  <div style={{display:'flex', alignItems:'center', gap:8, marginBottom:8}}>
+                    <input
+                      type="file"
+                      accept="application/pdf"
+                      onChange={e => handleFileChange(ano, mes, e)}
+                      disabled={desligado}
+                    />
+                    {dados[ano][mes].file && (
+                      <span style={{fontSize:13, color:'#1976d2', fontWeight:500}}>{dados[ano][mes].file.name}</span>
+                    )}
+                  </div>
+                  {dados[ano][mes].file && (
+                    <button
+                      onClick={() => handleDownload(ano, mes)}
+                      style={{ background: '#1976d2', color: '#fff', border: 'none', borderRadius: 4, padding: '4px 12px', fontWeight: 600, cursor: 'pointer' }}
+                      disabled={desligado}
+                    >
+                      Download
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
           </div>
         );
       })}
