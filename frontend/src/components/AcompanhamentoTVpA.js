@@ -24,15 +24,22 @@ const initialData = () => {
 };
 
 
+
 export default function AcompanhamentoTVpA({ razaoSocial, cnpj }) {
-  // Usa o cnpj como chave para persistir os dados de cada cliente
-  const chaveStorage = cnpj ? `acompanhamentoTVpA_${cnpj}` : null;
+  // Chave para persistir os checks por CNPJ
+  const chaveChecks = cnpj ? `checks_TVPA_${cnpj}` : 'checks_TVPA';
+  // Carrega os checks do localStorage, se houver
   const [dados, setDados] = useState(() => {
-    if (chaveStorage) {
-      try {
-        const salvo = localStorage.getItem(chaveStorage);
-        if (salvo) return JSON.parse(salvo);
-      } catch {}
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      const base = initialData();
+      ANOS.forEach(ano => {
+        MESES.forEach(mes => {
+          base[ano][mes].checked = !!(checksSalvos[ano] && checksSalvos[ano][mes]);
+        });
+      });
+      return base;
     }
     return initialData();
   });
@@ -73,12 +80,41 @@ export default function AcompanhamentoTVpA({ razaoSocial, cnpj }) {
           }
         }
       };
-      if (chaveStorage) {
-        try { localStorage.setItem(chaveStorage, JSON.stringify(novo)); } catch {}
-      }
+      // Salva no localStorage
+      const checksToSave = {};
+      ANOS.forEach(a => {
+        checksToSave[a] = {};
+        MESES.forEach(m => { checksToSave[a][m] = novo[a][m].checked; });
+      });
+      localStorage.setItem(chaveChecks, JSON.stringify(checksToSave));
       return novo;
     });
   };
+
+  // Garante que ao trocar de cliente/cnpj, recarrega os checks corretos
+  React.useEffect(() => {
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      setDados(prev => {
+        const base = initialData();
+        ANOS.forEach(ano => {
+          MESES.forEach(mes => {
+            base[ano][mes].checked = !!(checksSalvos[ano] && checksSalvos[ano][mes]);
+            // Mantém arquivos já carregados, se houver
+            if (prev[ano][mes].file) {
+              base[ano][mes].file = prev[ano][mes].file;
+              base[ano][mes].fileUrl = prev[ano][mes].fileUrl;
+            }
+          });
+        });
+        return base;
+      });
+    } else {
+      setDados(initialData());
+    }
+    // eslint-disable-next-line
+  }, [chaveChecks]);
 
   const handleFileChange = (ano, mes, e) => {
     const file = e.target.files[0];
