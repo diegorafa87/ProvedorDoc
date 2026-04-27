@@ -21,12 +21,23 @@ const initialData = () => {
 
 
 
+
 export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
   const [dados, setDados] = useState(initialData());
   const inputContratoRef = useRef();
   const [camposContrato, setCamposContrato] = useState(null);
 
-
+  // As chaves e estados precisam ser declarados antes de qualquer uso
+  const chaveDesligados = cnpj ? `anosDesligados_POSTES_${cnpj}` : 'anosDesligados_POSTES';
+  const chaveOcultos = cnpj ? `anosOcultos_POSTES_${cnpj}` : 'anosOcultos_POSTES';
+  const [anosDesligados, setAnosDesligados] = useState(() => {
+    const salvo = localStorage.getItem(chaveDesligados);
+    return salvo ? JSON.parse(salvo) : {};
+  });
+  const [anosOcultos, setAnosOcultos] = useState(() => {
+    const salvo = localStorage.getItem(chaveOcultos);
+    return salvo ? JSON.parse(salvo) : {};
+  });
 
   // Salva no backend sempre que muda
   useEffect(() => {
@@ -67,17 +78,6 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
     // Implemente a lógica de upload se necessário
     // Por enquanto, apenas evita erro de referência
   };
-
-  const chaveDesligados = cnpj ? `anosDesligados_POSTES_${cnpj}` : 'anosDesligados_POSTES';
-  const chaveOcultos = cnpj ? `anosOcultos_POSTES_${cnpj}` : 'anosOcultos_POSTES';
-  const [anosDesligados, setAnosDesligados] = useState(() => {
-    const salvo = localStorage.getItem(chaveDesligados);
-    return salvo ? JSON.parse(salvo) : {};
-  });
-  const [anosOcultos, setAnosOcultos] = useState(() => {
-    const salvo = localStorage.getItem(chaveOcultos);
-    return salvo ? JSON.parse(salvo) : {};
-  });
 
 
   const handleCheck = (ano) => {
