@@ -37,6 +37,10 @@ exports.atualizarStatus = async (req, res) => {
     if (!['NOVO','ATIVO','CORRIGIR','SUSPENSO'].includes(status)) {
       return res.status(400).json({ error: 'Status inválido' });
     }
+    // Impede que o status volte para NOVO após o cadastro
+    if (status === 'NOVO') {
+      return res.status(400).json({ error: 'Status NOVO só pode ser atribuído no cadastro do cliente.' });
+    }
     const cliente = await Cliente.findByIdAndUpdate(id, { status }, { new: true });
     if (!cliente) return res.status(404).json({ error: 'Cliente não encontrado' });
     registrarLog('ATUALIZAR_STATUS', cliente.cnpj, { id, status });
