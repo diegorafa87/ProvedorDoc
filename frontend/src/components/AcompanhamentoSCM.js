@@ -24,7 +24,23 @@ const initialData = () => {
 };
 
 export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
-  const [dados, setDados] = useState(initialData());
+  // Chave para persistir os checks por CNPJ
+  const chaveChecks = cnpj ? `checks_SCM_${cnpj}` : 'checks_SCM';
+  // Carrega os checks do localStorage, se houver
+  const [dados, setDados] = useState(() => {
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      const base = initialData();
+      ANOS.forEach(ano => {
+        MESES.forEach(mes => {
+          base[ano][mes].checked = !!(checksSalvos[ano] && checksSalvos[ano][mes]);
+        });
+      });
+      return base;
+    }
+    return initialData();
+  });
 
   const chaveDesligados = cnpj ? `anosDesligados_SCM_${cnpj}` : 'anosDesligados_SCM';
   const chaveOcultos = cnpj ? `anosOcultos_SCM_${cnpj}` : 'anosOcultos_SCM';
@@ -73,17 +89,52 @@ export default function AcompanhamentoSCM({ razaoSocial, cnpj }) {
   }, [cnpj]);
 
   const handleCheck = (ano, mes) => {
-    setDados(prev => ({
-      ...prev,
-      [ano]: {
-        ...prev[ano],
-        [mes]: {
-          ...prev[ano][mes],
-          checked: !prev[ano][mes].checked
+    setDados(prev => {
+      const novo = {
+        ...prev,
+        [ano]: {
+          ...prev[ano],
+          [mes]: {
+            ...prev[ano][mes],
+            checked: !prev[ano][mes].checked
+          }
         }
-      }
-    }));
+      };
+      // Salva no localStorage
+      const checksToSave = {};
+      ANOS.forEach(a => {
+        checksToSave[a] = {};
+        MESES.forEach(m => { checksToSave[a][m] = novo[a][m].checked; });
+      });
+      localStorage.setItem(chaveChecks, JSON.stringify(checksToSave));
+      return novo;
+    });
   };
+
+  // Garante que ao trocar de cliente/cnpj, recarrega os checks corretos
+  React.useEffect(() => {
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      setDados(prev => {
+        const base = initialData();
+        ANOS.forEach(ano => {
+          MESES.forEach(mes => {
+            base[ano][mes].checked = !!(checksSalvos[ano] && checksSalvos[ano][mes]);
+            // Mantém arquivos já carregados, se houver
+            if (prev[ano][mes].file) {
+              base[ano][mes].file = prev[ano][mes].file;
+              base[ano][mes].fileUrl = prev[ano][mes].fileUrl;
+            }
+          });
+        });
+        return base;
+      });
+    } else {
+      setDados(initialData());
+    }
+    // eslint-disable-next-line
+  }, [chaveChecks]);
 
   const handleFileChange = (ano, mes, e) => {
     const file = e.target.files[0];

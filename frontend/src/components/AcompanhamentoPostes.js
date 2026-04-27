@@ -23,7 +23,22 @@ const initialData = () => {
 
 
 export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
-  const [dados, setDados] = useState(initialData());
+  // Chave para persistir os checks por CNPJ
+  const chaveChecks = cnpj ? `checks_POSTES_${cnpj}` : 'checks_POSTES';
+  // Carrega os checks do localStorage, se houver
+  const [dados, setDados] = useState(() => {
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      // Garante que todos os anos existem
+      const base = initialData();
+      ANOS.forEach(ano => {
+        base[ano].checked = !!checksSalvos[ano];
+      });
+      return base;
+    }
+    return initialData();
+  });
   const inputContratoRef = useRef();
   const [camposContrato, setCamposContrato] = useState(null);
 
@@ -81,14 +96,46 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
 
 
   const handleCheck = (ano) => {
-    setDados(prev => ({
-      ...prev,
-      [ano]: {
-        ...prev[ano],
-        checked: !prev[ano].checked
-      }
-    }));
+    setDados(prev => {
+      const novo = {
+        ...prev,
+        [ano]: {
+          ...prev[ano],
+          checked: !prev[ano].checked
+        }
+      };
+      // Salva no localStorage
+      const checksToSave = {};
+      ANOS.forEach(a => { checksToSave[a] = novo[a].checked; });
+      localStorage.setItem(chaveChecks, JSON.stringify(checksToSave));
+      return novo;
+    });
   };
+
+  // Garante que ao trocar de cliente/cnpj, recarrega os checks corretos
+  React.useEffect(() => {
+    const salvo = localStorage.getItem(chaveChecks);
+    if (salvo) {
+      const checksSalvos = JSON.parse(salvo);
+      setDados(prev => {
+        const base = initialData();
+        ANOS.forEach(ano => {
+          base[ano].checked = !!checksSalvos[ano];
+        });
+        // Mantém arquivos já carregados, se houver
+        ANOS.forEach(ano => {
+          if (prev[ano].file) {
+            base[ano].file = prev[ano].file;
+            base[ano].fileUrl = prev[ano].fileUrl;
+          }
+        });
+        return base;
+      });
+    } else {
+      setDados(initialData());
+    }
+    // eslint-disable-next-line
+  }, [chaveChecks]);
 
   const handleFileChange = (ano, e) => {
     const file = e.target.files[0];
