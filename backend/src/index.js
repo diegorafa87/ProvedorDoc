@@ -12,7 +12,9 @@ const app = express();
 // Conecta ao MongoDB
 connectDB();
 
-app.use(cors());
+app.use(cors({
+  origin: 'https://provedordoc-2.onrender.com'
+}));
 app.use(express.json());
 
 // Rotas
