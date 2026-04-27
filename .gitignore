@@ -1,0 +1,2 @@
+# Ignorar banco de dados local do backend
+backend/src/db.json
