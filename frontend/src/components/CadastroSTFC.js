@@ -86,16 +86,18 @@ const CadastroSTFC = ({ cnpj }) => {
 
   const handleGerarCSV = () => {
     if (linhas.length === 0) return;
-    // Cabeçalho fixo padrão ANSAT
-    const header = camposCSV_STFC.join(';');
-    // Monta as linhas do CSV na ordem correta
+    // Cabeçalho fixo padrão ANSAT, separador vírgula
+    const header = camposCSV_STFC.join(',');
+    // Monta as linhas do CSV na ordem correta, separador vírgula
     const rows = linhas.map(linha => {
       return camposCSV_STFC.map(campo => {
         if (campo === 'CNPJ') return cnpjLimpo;
         return linha[campo] || '';
-      }).join(';');
+      }).join(',');
     });
-    const csvContent = [header, ...rows].join('\n');
+    let csvContent = [header, ...rows].join('\r\n');
+    // Remove linha em branco final, se houver
+    csvContent = csvContent.replace(/(\r\n)+$/g, '');
     // Busca razão social do localStorage se não vier via props
     let nomeRazao = '';
     if (typeof window !== 'undefined') {
@@ -114,7 +116,9 @@ const CadastroSTFC = ({ cnpj }) => {
     let ano = linhas[0]?.ANO || '';
     let mes = linhas[0]?.MES || '';
     const nomeArquivo = `STFC_${nomeRazao}_${ano}_${mes}.csv`;
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    // Força BOM UTF-8
+    const BOM = '\uFEFF';
+    const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.setAttribute('download', nomeArquivo);
@@ -253,7 +257,19 @@ const CadastroSTFC = ({ cnpj }) => {
                   <td style={{padding:'4px 8px'}}>{item.data}</td>
                   <td style={{textAlign:'center',padding:'4px 8px', display:'flex', gap:8, justifyContent:'center'}}>
                     <button onClick={() => {
-                      const blob = new Blob([item.conteudo], { type: 'text/csv;charset=utf-8;' });
+                      // Força BOM UTF-8, separador vírgula, CRLF e sem linha em branco final
+                      const BOM = '\uFEFF';
+                      let conteudo = item.conteudo.replace(/^\s+/, '');
+                      // Garante que a primeira linha é o cabeçalho correto e com vírgula
+                      const header = 'CNPJ,ANO,MES,COD_IBGE,TIPO_CLIENTE,TIPO_ATENDIMENTO,TIPO_MEIO,ACESSOS';
+                      let linhas = conteudo.split(/\r?\n/);
+                      linhas[0] = header;
+                      conteudo = linhas.join('\r\n');
+                      // Remove linha em branco final
+                      conteudo = conteudo.replace(/(\r\n)+$/g, '');
+                      // Força CRLF em todas as linhas
+                      conteudo = conteudo.replace(/([^\r])\n/g, '$1\r\n');
+                      const blob = new Blob([BOM + conteudo], { type: 'text/csv;charset=utf-8;' });
                       const link = document.createElement('a');
                       link.href = URL.createObjectURL(blob);
                       link.setAttribute('download', item.nome);
