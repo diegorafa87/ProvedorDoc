@@ -5,7 +5,8 @@
   "main": "src/App.js",
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "postinstall": "chmod +x node_modules/.bin/react-scripts || true"
   },
   "dependencies": {
     "react": "^18.0.0",
