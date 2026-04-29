@@ -118,11 +118,9 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
       obj.VELOCIDADE = velocidade;
       return obj;
     });
-    // Gera linhas CSV com separador vírgula e CRLF
-    // Usa ponto e vírgula como separador de colunas
+    // Gera linhas CSV com separador ponto e vírgula e CRLF, sem linha em branco final
     const rows = linhasComCnpj.map(linha => ordemCSV.map(c => linha[c] || '').join(';'));
-    // Garante CRLF ao final do arquivo
-    let csvContent = [header, ...rows].join('\r\n') + '\r\n';
+    let csvContent = [header, ...rows].join('\r\n');
     setCsv(csvContent);
     // Nome do arquivo: SCM_RAZAOSOCIAL_ANO_MES.csv
     let ano = linhasComCnpj[0]?.ANO || '';
