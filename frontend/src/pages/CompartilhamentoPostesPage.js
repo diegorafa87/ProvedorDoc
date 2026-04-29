@@ -145,7 +145,8 @@ export default function CompartilhamentoPostesPage() {
                             linha.icControversiaJudAdm,
                             linha.observacoes
                           ].map(v => v == null ? '' : String(v)).join(';'));
-                          const csvContent = [header.join(';'), ...rows].join('\r\n') + '\r\n';
+                          // Gera CSV sem linha em branco final
+                          const csvContent = [header.join(';'), ...rows].join('\r\n');
                           // Nome do arquivo
                           let razao = '';
                           try {
