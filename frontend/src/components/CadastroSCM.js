@@ -120,9 +120,8 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
     });
     // Gera linhas CSV com separador vírgula e CRLF
     const rows = linhasComCnpj.map(linha => ordemCSV.map(c => linha[c] || '').join(','));
-    let csvContent = [header, ...rows].join('\r\n');
-    // Remove linha em branco final, se houver
-    csvContent = csvContent.replace(/(\r\n)+$/g, '');
+    // Garante CRLF ao final do arquivo
+    let csvContent = [header, ...rows].join('\r\n') + '\r\n';
     setCsv(csvContent);
     // Nome do arquivo: SCM_RAZAOSOCIAL_ANO_MES.csv
     let ano = linhasComCnpj[0]?.ANO || '';
@@ -371,10 +370,8 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
                       const header = 'CNPJ,ANO,MES,COD_IBGE,TIPO_CLIENTE,TIPO_ATENDIMENTO,TIPO_MEIO,TIPO_PRODUTO,TIPO_TECNOLOGIA,VELOCIDADE,ACESSOS';
                       let linhas = conteudo.split(/\r?\n/);
                       linhas[0] = header;
-                      conteudo = linhas.join('\r\n');
-                      // Remove linha em branco final
-                      conteudo = conteudo.replace(/(\r\n)+$/g, '');
-                      // Força CRLF em todas as linhas
+                      conteudo = linhas.join('\r\n') + '\r\n'; // Garante CRLF ao final
+                      // Força CRLF em todas as linhas (caso haja algum \n isolado)
                       conteudo = conteudo.replace(/([^\r])\n/g, '$1\r\n');
                       const blob = new Blob([BOM + conteudo], { type: 'text/csv;charset=utf-8;' });
                       const link = document.createElement('a');
