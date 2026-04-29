@@ -368,7 +368,7 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
                       const BOM = '\uFEFF';
                       let conteudo = item.conteudo.replace(/^\s+/, '');
                       // Garante que a primeira linha é o cabeçalho correto e com vírgula
-                      const header = 'CNPJ,ANO,MES,COD_IBGE,TIPO_CLIENTE,TIPO_ATENDIMENTO,TIPO_MEIO,TIPO_PRODUTO,TIPO_TECNOLOGIA,VELOCIDADE,ACESSOS';
+                      const header = 'CNPJ;ANO;MES;COD_IBGE;TIPO_CLIENTE;TIPO_ATENDIMENTO;TIPO_MEIO;TIPO_PRODUTO;TIPO_TECNOLOGIA;VELOCIDADE;ACESSOS';
                       let linhas = conteudo.split(/\r?\n/);
                       linhas[0] = header;
                       conteudo = linhas.join('\r\n') + '\r\n'; // Garante CRLF ao final
