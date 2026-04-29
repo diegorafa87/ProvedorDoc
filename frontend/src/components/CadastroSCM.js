@@ -36,7 +36,7 @@ const ordemCSV = [
 
 // Função para gerar CSV com separador vírgula, CRLF e sem linha em branco final
 function toCSV(obj) {
-  const header = ordemCSV.join(',');
+  const header = ordemCSV.join(';');
   const row = ordemCSV.map(c => obj[c] || '').join(',');
   return `${header}\r\n${row}`;
 }
@@ -102,7 +102,7 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
 
   const handleGerarCSV = () => {
     if (linhas.length === 0) return;
-    const header = ordemCSV.join(',');
+    const header = ordemCSV.join(';');
     // Insere o CNPJ do cliente em cada linha, apenas números
     // CNPJ: só números, 14 dígitos com zeros à esquerda
     const cnpjLimpo = (cnpj || '').replace(/\D/g, '').padStart(14, '0');
