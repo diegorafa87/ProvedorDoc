@@ -158,10 +158,12 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
 
   // Atualiza o localStorage ao excluir do histórico
   const handleExcluirHistorico = idx => {
-    const novo = historico.filter((_, i) => i !== idx);
-    setHistorico(novo);
-    // Usa a mesma chave dinâmica do localStorage usada para salvar
-    localStorage.setItem(historicoKey, JSON.stringify(novo));
+    if (window.confirm('Tem certeza que deseja excluir este arquivo CSV do histórico? Essa ação não poderá ser desfeita.')) {
+      const novo = historico.filter((_, i) => i !== idx);
+      setHistorico(novo);
+      // Usa a mesma chave dinâmica do localStorage usada para salvar
+      localStorage.setItem(historicoKey, JSON.stringify(novo));
+    }
   };
 
 
