@@ -93,11 +93,10 @@ const CadastroSTFC = ({ cnpj }) => {
       return camposCSV_STFC.map(campo => {
         if (campo === 'CNPJ') return cnpjLimpo;
         return linha[campo] || '';
-      }).join(',');
+      }).join(';');
     });
+    // Usa CRLF como quebra de linha, sem linha em branco final
     let csvContent = [header, ...rows].join('\r\n');
-    // Remove linha em branco final, se houver
-    csvContent = csvContent.replace(/(\r\n)+$/g, '');
     // Busca razão social do localStorage se não vier via props
     let nomeRazao = '';
     if (typeof window !== 'undefined') {
