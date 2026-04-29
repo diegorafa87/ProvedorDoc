@@ -86,8 +86,8 @@ const CadastroSTFC = ({ cnpj }) => {
 
   const handleGerarCSV = () => {
     if (linhas.length === 0) return;
-    // Cabeçalho fixo padrão ANSAT, separador vírgula
-    const header = camposCSV_STFC.join(',');
+    // Cabeçalho fixo padrão ANSAT, separador ponto e vírgula
+    const header = camposCSV_STFC.join(';');
     // Monta as linhas do CSV na ordem correta, separador vírgula
     const rows = linhas.map(linha => {
       return camposCSV_STFC.map(campo => {
