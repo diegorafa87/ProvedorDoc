@@ -119,7 +119,8 @@ const CadastroSCM = ({ cnpj, razaoSocial }) => {
       return obj;
     });
     // Gera linhas CSV com separador vírgula e CRLF
-    const rows = linhasComCnpj.map(linha => ordemCSV.map(c => linha[c] || '').join(','));
+    // Usa ponto e vírgula como separador de colunas
+    const rows = linhasComCnpj.map(linha => ordemCSV.map(c => linha[c] || '').join(';'));
     // Garante CRLF ao final do arquivo
     let csvContent = [header, ...rows].join('\r\n') + '\r\n';
     setCsv(csvContent);
