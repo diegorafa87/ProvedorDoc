@@ -137,31 +137,48 @@ export default function AcompanhamentoPostes({ razaoSocial, cnpj }) {
     // eslint-disable-next-line
   }, [chaveChecks]);
 
-  const handleFileChange = (ano, e) => {
+  // Upload para Cloudflare R2, igual SCM
+  const handleFileChange = async (ano, e) => {
     const file = e.target.files[0];
-    if (file) {
-      const nomeLimpo = (razaoSocial || "").normalize('NFD').replace(/[^\w\s]/gi, '').replace(/\s+/g, '_').toUpperCase();
-      const nomeArquivo = `COMP_POSTES_${nomeLimpo}_${ano}_COMPARTILHAMENTO.pdf`;
-      const novoFile = new File([file], nomeArquivo, { type: file.type });
-      const url = URL.createObjectURL(novoFile);
-      setDados(prev => ({
-        ...prev,
-        [ano]: {
-          ...prev[ano],
-          file: novoFile,
-          fileUrl: url
-        }
-      }));
-        fetch(`${API_URL}/api/acao`, {
+    if (!file) return;
+
+    const nomeLimpo = (razaoSocial || "").normalize('NFD').replace(/[^\w\s]/gi, '').replace(/\s+/g, '_').toUpperCase();
+    const nomeArquivo = `COMP_POSTES_${nomeLimpo}_${ano}_COMPARTILHAMENTO.pdf`;
+    const novoFile = new File([file], nomeArquivo, { type: file.type });
+
+    // Envia para o backend (Cloudflare R2)
+    const formData = new FormData();
+    formData.append('pdf', novoFile);
+    let urlR2 = '';
+    try {
+      const resp = await fetch(`${API_URL}/api/acompanhamento-postes/upload`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          acao: 'UPLOAD_PDF_POSTES',
-          usuario: razaoSocial || 'desconhecido',
-          detalhes: { nomeArquivo, ano }
-        })
+        body: formData
       });
+      const data = await resp.json();
+      if (data && data.url) urlR2 = data.url;
+    } catch (err) {
+      alert('Falha ao enviar PDF para o servidor.');
     }
+
+    setDados(prev => ({
+      ...prev,
+      [ano]: {
+        ...prev[ano],
+        file: novoFile,
+        fileUrl: urlR2 || URL.createObjectURL(novoFile)
+      }
+    }));
+
+    fetch(`${API_URL}/api/acao`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        acao: 'UPLOAD_PDF_POSTES',
+        usuario: razaoSocial || 'desconhecido',
+        detalhes: { nomeArquivo, ano }
+      })
+    });
   };
 
   const handleDownload = (ano) => {
